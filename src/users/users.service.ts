@@ -1,15 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UsersService {
 
-    // constructor(private )
+    constructor(private database: DatabaseService) {}
 
-    getUsers(){
+    listUsers(){
+        return this.database.user.findMany({
+            where: {
 
+            }
+        })
     }
 
-    getUser(){
+    getUser(id: number){
+        return this.database.user.findUnique({
+            where: {
+                id,
+            }
+        })
+    }
+
+
+    createUser() {
         
     }
 }
