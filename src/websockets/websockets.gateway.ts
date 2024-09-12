@@ -21,7 +21,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
-    this.clients.add(client);    
+    this.clients.add(client);
   }
 
   handleDisconnect(client: Socket) {
@@ -32,7 +32,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
   @SubscribeMessage('messageToServer')
   handleMessage(client: Socket, payload: string): void {
     console.log(`Message from client ${client.id}: ${payload}`);
-    this.server.emit('  ',payload);
+    this.server.emit('messageToClient',payload);
     
   }
 
