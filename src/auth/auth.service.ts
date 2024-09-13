@@ -5,16 +5,20 @@ import { SignUpDto } from './dto/signup.dto';
 import * as bcrypt from 'bcrypt'
 import { LoginDto } from './dto/login.dto';
 
+
+
 @Injectable()
 export class AuthService {
 
     constructor(private database: DatabaseService , private jwtService: JwtService) {}
+    
+
 
     async signUp(signupDto: SignUpDto) {
         let {username , password1 ,password2 , email} = signupDto;
         if (password1 === password2) {
-            const salt = await bcrypt.genSalt(10);
-            const hashed = await bcrypt.hash(password1,salt);
+            
+            const hashed = await bcrypt.hash(password1,2);
             const user = await this.database.user.create({
                 data: {username: username , password: hashed , email: email}
             })
@@ -35,11 +39,14 @@ export class AuthService {
                     email,
                 }
             })
-            const salt = await bcrypt.genSalt(10)
-            const hashed = await bcrypt.hash(password,salt)
-            if (hashed !== user.password) {
+                
+            const isMatch = await bcrypt.compare(password ,user.password)
+            
+            if (!isMatch) {
                 return new HttpException('wrong password' , HttpStatus.BAD_REQUEST)
             }
+            user['token'] = this.jwtService.sign(user)
+            return user;
 
         }
         catch {
