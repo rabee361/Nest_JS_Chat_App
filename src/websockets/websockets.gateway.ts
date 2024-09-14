@@ -1,7 +1,9 @@
-import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, MessageBody, ConnectedSocket } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { CreateMessageDto } from './dto/create-mesage.dto';
+import { DatabaseService } from 'src/database/database.service';
 
-@WebSocketGateway({
+@WebSocketGateway({ 
   cors: {
     origin: ['http://localhost:5173'],
     methods: ['GET', 'POST','PUT','DELETE'],
@@ -9,6 +11,8 @@ import { Socket, Server } from 'socket.io';
   }
 })
 export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+
+  constructor(private databaseService: DatabaseService) {}
 
   private clients: Set<Socket> = new Set();
 
@@ -30,9 +34,15 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
   }
 
   @SubscribeMessage('messageToServer')
-  handleMessage(client: Socket, payload: string): void {
-    console.log(`Message from client ${client.id}: ${payload}`);
-    this.server.emit('messageToClient',payload);
+  async handleMessage(@MessageBody() createMessageDto: CreateMessageDto, @ConnectedSocket() client: Socket  ) {
+    const message = await this.databaseService.message.create({
+      data:{
+        content: createMessageDto.content,
+        senderId: createMessageDto.senderId,
+      },
+    })
+    
+    this.server.emit('messageToClient',message);
     
   }
 

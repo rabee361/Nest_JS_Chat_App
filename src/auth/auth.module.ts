@@ -7,12 +7,18 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UsersModule } from 'src/users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     DatabaseModule,
     UsersModule,
     PassportModule,
+    MulterModule.register({
+      dest: './files',
+    }),
     JwtModule.register({
       secret: 'abc123',
       signOptions: {'expiresIn':'1h'},

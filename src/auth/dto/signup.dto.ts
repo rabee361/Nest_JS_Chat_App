@@ -17,5 +17,9 @@ export class SignUpDto {
     @IsString()
     @IsNotEmpty()
     password2: string
+
+    @IsString()
+    image: string
+
     
 }

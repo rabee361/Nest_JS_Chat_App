@@ -10,17 +10,22 @@ import { LoginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
 
-    constructor(private database: DatabaseService , private jwtService: JwtService) {}
+    constructor(
+        private database: DatabaseService,
+        private jwtService: JwtService,
+    ) {}
     
 
 
     async signUp(signupDto: SignUpDto) {
-        let {username , password1 ,password2 , email} = signupDto;
+        let {username , password1 ,password2 , email ,image} = signupDto;
         if (password1 === password2) {
             
             const hashed = await bcrypt.hash(password1,2);
+            console.log(image);
+            
             const user = await this.database.user.create({
-                data: {username: username , password: hashed , email: email}
+                data: {username: username , password: hashed , email: email , image:image}
             })
             const { password, ...myuser} = user
             myuser['token'] = this.jwtService.sign(myuser)
@@ -43,14 +48,14 @@ export class AuthService {
             const isMatch = await bcrypt.compare(password ,user.password)
             
             if (!isMatch) {
-                return new HttpException('wrong password' , HttpStatus.BAD_REQUEST)
+                throw new HttpException('wrong password' , HttpStatus.BAD_REQUEST)
             }
             user['token'] = this.jwtService.sign(user)
             return user;
 
         }
         catch {
-            return new HttpException('email does not exist', HttpStatus.BAD_REQUEST)
+            throw new HttpException('email does not exist', HttpStatus.BAD_REQUEST)
         }
     }
 }
