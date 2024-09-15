@@ -39,6 +39,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
       data:{
         content: createMessageDto.content,
         senderId: createMessageDto.senderId,
+        chatId: createMessageDto.chatId
       },
     })
     

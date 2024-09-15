@@ -23,14 +23,18 @@ model User {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   online    Boolean   @default(false)
-  chat      Chat[]  
+  chats1    Chat[]    @relation("user1")
+  chats2    Chat[]    @relation("user2")
 }
 
 
 model Chat {
   id      Int    @id @default(autoincrement())
-  user      User[]
-  // messages    Message[]
+  user1        User         @relation("user1",fields: [user1Id], references: [id])
+  user2        User         @relation("user2",fields: [user2Id], references: [id])
+  user1Id      Int
+  user2Id      Int
+  messages    Message[]
 }
 
 
@@ -39,6 +43,6 @@ model Message {
   createdAt   DateTime    @default(now())
   senderId      Int
   content     String
-  // chat    Chat   @relation(fields: [chatId] , references: [id])
-  // chatId    Int
+  chat    Chat   @relation(fields: [chatId] , references: [id])
+  chatId    Int   @default(1)
 }

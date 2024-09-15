@@ -33,6 +33,18 @@ export class UsersService {
     }
 
 
+
+
+    createChat() {
+        return this.database.chat.create({
+            data: {
+                user1Id: 1,
+                user2Id: 2,
+            }   
+        })
+    }
+
+
     chatMessages(id: number) {
         try {
             const chat = this.database.chat.findUnique({
@@ -50,6 +62,30 @@ export class UsersService {
         }
         else {
             throw new HttpException('chat not found',HttpStatus.NOT_FOUND)
+        }
+    }
+
+
+
+    listChats(userId) {
+        try {
+            const chats = this.database.chat.findMany
+            ({
+                where: {
+                    OR: [
+                        {user1Id: userId},
+                        {user2Id: userId}
+                    ]
+                },
+                include: {
+                    user1: true,
+                    user2: true
+                }
+            })
+            return chats;
+        }
+        catch {
+            throw new HttpException('no chats' , HttpStatus.NOT_FOUND)
         }
     }
 }
