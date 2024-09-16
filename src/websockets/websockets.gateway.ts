@@ -47,4 +47,19 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     
   }
 
+
+  @SubscribeMessage('getMessagesServer')
+  async getMessages(@ConnectedSocket() client: Socket) {
+    const messages = await this.databaseService.message.findMany({
+      where: {
+        chatId:2
+      }
+    })
+    // console.log(messages);
+    return messages
+
+    // this.server.emit('getMessagesServer',messages);
+  }
+
+
 }
