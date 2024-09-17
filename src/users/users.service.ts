@@ -56,7 +56,11 @@ export class UsersService {
         catch {
             throw new HttpException('chat not found' , HttpStatus.NOT_FOUND)
         }
-        const messages = this.database.message.findMany()
+        const messages = this.database.message.findMany({
+            where: {
+                chatId: id,
+            }
+        })
         if (messages) {
             return messages;
         }
