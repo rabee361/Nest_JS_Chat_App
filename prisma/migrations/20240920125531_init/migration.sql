@@ -28,8 +28,17 @@ CREATE TABLE "Message" (
     "senderId" INTEGER NOT NULL,
     "content" TEXT NOT NULL,
     "chatId" INTEGER NOT NULL DEFAULT 1,
+    "attachId" INTEGER NOT NULL DEFAULT 1,
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Attachment" (
+    "id" SERIAL NOT NULL,
+    "attach" TEXT NOT NULL,
+
+    CONSTRAINT "Attachment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -43,3 +52,6 @@ ALTER TABLE "Chat" ADD CONSTRAINT "Chat_user2Id_fkey" FOREIGN KEY ("user2Id") RE
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_attachId_fkey" FOREIGN KEY ("attachId") REFERENCES "Attachment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -2,12 +2,16 @@ import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection,
 import { Socket, Server } from 'socket.io';
 import { CreateMessageDto } from './dto/create-mesage.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @WebSocketGateway({ 
   cors: {
     origin: ['http://localhost:5173'],
     methods: ['GET', 'POST','PUT','DELETE'],
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['content-type', 'authorization']
   }
 })
 export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -33,13 +37,40 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     this.clients.delete(client);
   }
 
+
+
+
   @SubscribeMessage('messageToServer')
-  async handleMessage(@MessageBody() createMessageDto: CreateMessageDto, @ConnectedSocket() client: Socket  ) {
+  // @UseInterceptors(FileInterceptor('attach', {
+  //   storage: diskStorage({
+  //     destination: './files',
+  //     filename: function (req, file, cb) {
+  //       cb(null, file.originalname)
+  //     }
+  //   }),
+  // }))
+  async handleMessage(@MessageBody() createMessageDto: CreateMessageDto ,@ConnectedSocket() client: Socket) {
+    console.log(createMessageDto);
+    
+    // if (createMessageDto.attach) {
+    //   createMessageDto.attach = 'http://localhost:3000/files/' + attach?.originalname; // Update this to use the new filename
+    //   console.log(createMessageDto.attach);
+      
+    //   await this.databaseService.message.create({
+    //     data:{
+    //       content: createMessageDto.content,
+    //       senderId: createMessageDto.senderId,
+    //       chatId: createMessageDto.chatId,
+    //     },
+    //   })
+    // }
+
     const message = await this.databaseService.message.create({
       data:{
         content: createMessageDto.content,
         senderId: createMessageDto.senderId,
-        chatId: createMessageDto.chatId
+        chatId: createMessageDto.chatId,
+        attach: createMessageDto.attachId
       },
     })
     
