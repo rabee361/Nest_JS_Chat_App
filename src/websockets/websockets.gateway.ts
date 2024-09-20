@@ -70,9 +70,11 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
         content: createMessageDto.content,
         senderId: createMessageDto.senderId,
         chatId: createMessageDto.chatId,
-        attach: createMessageDto.attachId
+        attach: createMessageDto.attach
       },
     })
+    console.log(message);
+    
     
     this.server.emit('messageToClient',message);
     
@@ -84,7 +86,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     const messages = await this.databaseService.message.findMany({
       where: {
         chatId,
-      }
+      },
     })
     return messages
   }
