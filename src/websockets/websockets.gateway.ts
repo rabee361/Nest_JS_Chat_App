@@ -2,9 +2,7 @@ import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection,
 import { Socket, Server } from 'socket.io';
 import { CreateMessageDto } from './dto/create-mesage.dto';
 import { DatabaseService } from 'src/database/database.service';
-import { UploadedFile, UseInterceptors } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+
 
 @WebSocketGateway({ 
   cors: {
@@ -39,31 +37,9 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
 
 
 
-
   @SubscribeMessage('messageToServer')
-  // @UseInterceptors(FileInterceptor('attach', {
-  //   storage: diskStorage({
-  //     destination: './files',
-  //     filename: function (req, file, cb) {
-  //       cb(null, file.originalname)
-  //     }
-  //   }),
-  // }))
   async handleMessage(@MessageBody() createMessageDto: CreateMessageDto ,@ConnectedSocket() client: Socket) {
     console.log(createMessageDto);
-    
-    // if (createMessageDto.attach) {
-    //   createMessageDto.attach = 'http://localhost:3000/files/' + attach?.originalname; // Update this to use the new filename
-    //   console.log(createMessageDto.attach);
-      
-    //   await this.databaseService.message.create({
-    //     data:{
-    //       content: createMessageDto.content,
-    //       senderId: createMessageDto.senderId,
-    //       chatId: createMessageDto.chatId,
-    //     },
-    //   })
-    // }
 
     const message = await this.databaseService.message.create({
       data:{
@@ -82,14 +58,13 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
 
 
   @SubscribeMessage('getMessagesServer')
-  async getMessages(@MessageBody() chatId: number ,  @ConnectedSocket() client: Socket) {
+  async getMessages(@ConnectedSocket() client: Socket ,@MessageBody() chatId?: number) {
     const messages = await this.databaseService.message.findMany({
       where: {
-        chatId,
+        chatId
       },
     })
     return messages
   }
-
 
 }
