@@ -39,7 +39,7 @@ export class UsersService {
         return this.database.chat.create({
             data: {
                 user1Id: 1,
-                user2Id: 6,
+                user2Id: 2,
             }   
         })
     }

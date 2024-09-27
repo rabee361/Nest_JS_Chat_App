@@ -20,10 +20,10 @@ export class WebsocketsController {
         }),
       }))
     async uploadImage(@UploadedFile() image) {
-        const attach = 'http://localhost:3000/files/' + image?.originalname;
+        const attach = 'http://85.31.237.33/files/' + image?.originalname;
         const imageSize: string = String((image?.size / 1000000).toFixed(1)) + " MB"
         const myFile = await this.uploadService.compressImage(image)
-        const attach2 = 'http://localhost:3000/files/compressed/' + myFile.fileName;
+        const attach2 = 'http://85.31.237.33/files/compressed/' + myFile.fileName;
         const message1 = await this.databaseService.attachment.create({
           data: {
             attach : attach , 
