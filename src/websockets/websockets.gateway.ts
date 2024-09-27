@@ -46,7 +46,10 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
         content: createMessageDto.content,
         senderId: createMessageDto.senderId,
         chatId: createMessageDto.chatId,
-        attach: createMessageDto.attach
+        attach: createMessageDto.attach,
+        attachSize: createMessageDto.attachSize,
+        attach2: createMessageDto.attach2,
+        attachSize2: createMessageDto.attachSize2
       },
     })
     console.log(message);

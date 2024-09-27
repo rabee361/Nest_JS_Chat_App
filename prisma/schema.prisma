@@ -45,11 +45,15 @@ model Message {
   content     String
   chat    Chat   @relation(fields: [chatId] , references: [id])
   chatId    Int   @default(1)
-  attach    String?      
+  attach    String?
+  attachSize    String?
+  attach2   String? 
+  attachSize2    String?
   }
 
 
 model Attachment {
   id      Int     @id @default(autoincrement())
-  attach    String    
+  attach    String    @unique
+  attachSize    String? 
 }

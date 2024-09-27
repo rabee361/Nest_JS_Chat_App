@@ -22,7 +22,6 @@ export class AuthService {
         if (password1 === password2) {
             
             const hashed = await bcrypt.hash(password1,2);
-            console.log(image);
             
             const user = await this.database.user.create({
                 data: {username: username , password: hashed , email: email , image:image}
