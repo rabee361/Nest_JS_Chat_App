@@ -34,26 +34,25 @@ model Chat {
   user2        User         @relation("user2",fields: [user2Id], references: [id])
   user1Id      Int
   user2Id      Int
-  messages    Message[]
 }
 
 
-model Message {
-  id    Int   @id @default(autoincrement())
-  createdAt   DateTime    @default(now())
-  senderId      Int
-  content     String
-  chat    Chat   @relation(fields: [chatId] , references: [id])
-  chatId    Int   @default(1)
-  attach    String?
-  attachSize    String?
-  attach2   String? 
-  attachSize2    String?
-  }
+// model Message {
+//   id    Int   @id @default(autoincrement())
+//   createdAt   DateTime    @default(now())
+//   senderId      Int
+//   content     String
+//   chat    Chat   @relation(fields: [chatId] , references: [id])
+//   chatId    Int   @default(1)
+//   attach    String?
+//   attachSize    String?
+//   attach2   String? 
+//   attachSize2    String?
+//   }
 
 
-model Attachment {
-  id      Int     @id @default(autoincrement())
-  attach    String    @unique
-  attachSize    String? 
-}
+// model Attachment {
+//   id      Int     @id @default(autoincrement())
+//   attach    String    @unique
+//   attachSize    String? 
+// }

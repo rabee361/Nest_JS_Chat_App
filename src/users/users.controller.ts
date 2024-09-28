@@ -8,20 +8,10 @@ export class UsersController {
     
     constructor(private readonly usersService: UsersService) {}
     
-    @Post('create')
-    createChat() {
-        return this.usersService.createChat()
-    }
-
     @Get()
     @UseGuards(JwtAuthGuard)
     listUsers(){
         return this.usersService.listUsers();
-    }
-
-    @Get('messages/:id')
-    chatMessages(@Param('id' , ParseIntPipe) id: number) {        
-        return this.usersService.chatMessages(id)
     }
 
     @Get(':id')
@@ -33,12 +23,5 @@ export class UsersController {
     deleteUser(@Param('id' , ParseIntPipe) id: number) {
         return this.usersService.deleteUser(id)
     }
-
-    
-    @Get('chats/:userId')
-    listChats(@Param('userId', ParseIntPipe) userId: number) {
-        return this.usersService.listChats(userId)
-    }
-    
 
 }

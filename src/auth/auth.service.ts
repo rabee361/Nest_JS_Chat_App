@@ -14,8 +14,6 @@ export class AuthService {
         private database: DatabaseService,
         private jwtService: JwtService,
     ) {}
-    
-
 
     async signUp(signupDto: SignUpDto) {
         let {username , password1 ,password2 , email ,image} = signupDto;

@@ -1,14 +1,15 @@
-import { Controller, HttpException, HttpStatus, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Attachment } from '@prisma/client';
 import { diskStorage } from 'multer';
 import { bool } from 'sharp';
 import { DatabaseService } from 'src/database/database.service';
 import { UploadService } from 'utils/compress';
+import { WebsocketsService } from './websockets.service';
+import { CreateChatDto } from './dto/create-chat.dto';
 
 @Controller('chats')
 export class WebsocketsController {
-    constructor (private databaseService: DatabaseService , private uploadService: UploadService) {}
+    constructor (private databaseService: DatabaseService, private websocketService: WebsocketsService) {}
 
     @Post('upload')
     @UseInterceptors(FileInterceptor('image', {
@@ -19,25 +20,24 @@ export class WebsocketsController {
           }
         }),
       }))
-    async uploadImage(@UploadedFile() image) {
-        const attach = 'http://85.31.237.33/files/' + image?.originalname;
-        const imageSize: string = String((image?.size / 1000000).toFixed(1)) + " MB"
-        const myFile = await this.uploadService.compressImage(image)
-        const attach2 = 'http://85.31.237.33/files/compressed/' + myFile.fileName;
-        const message1 = await this.databaseService.attachment.create({
-          data: {
-            attach : attach , 
-            attachSize: imageSize
-          },
-        })
-        const message2 = await this.databaseService.attachment.create({
-            data: {
-              attach : attach2 , 
-              attachSize: myFile.fileSize
-            },
-        })
-        
-        return {message1 , message2}; 
+     uploadImage(@UploadedFile() image) {
+        return this.websocketService.uploadImage(image)
+    }
+
+    @Post('create')
+    createChat(@Body() createChatDto: CreateChatDto) {
+      try {
+        return this.websocketService.createChat(createChatDto);
+      }
+      catch {
+        throw new HttpException('something went wrong' , HttpStatus.BAD_REQUEST)
+      }
+    }
+
+
+    @Get('list/:id')
+    listChats(@Param('id' , ParseIntPipe) id: number) {
+      return this.websocketService.listChats(id);
 
     }
 }

@@ -13,13 +13,13 @@ export class AuthController {
     @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({
           destination: './files',
-          filename: function (req, file, cb) {
+          filename: function (req, file, cb) {  
             cb(null, file.originalname)
           }
         }),
       }))
     signUp(@Body() signupDto: SignUpDto, @UploadedFile() file) {
-        signupDto.image = 'http://85.31.237.33/files/' + file?.originalname; // Update this to use the new filename
+        signupDto.image = 'http://localhost:3000/files/' + file?.originalname; // Update this to use the new filename
         return this.authService.signUp(signupDto)
     }
     
