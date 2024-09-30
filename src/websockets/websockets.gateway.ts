@@ -3,10 +3,9 @@ import { Socket, Server } from 'socket.io';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { DatabaseService } from 'src/database/database.service';
 
-
-@WebSocketGateway({ 
+@WebSocketGateway({
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:3001'],
     methods: ['GET', 'POST','PUT','DELETE'],
     credentials: true,
     allowedHeaders: ['content-type', 'authorization']
@@ -24,7 +23,6 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     console.log('WebSocket Gateway initialized');
   }
 
-
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
     this.clients.add(client);
@@ -35,19 +33,38 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     this.clients.delete(client);
   }
 
-
 ////////////// edit
   @SubscribeMessage('messageToServer')
   async handleMessage(@MessageBody() createMessageDto: CreateMessageDto ,@ConnectedSocket() client: Socket) {
     console.log(createMessageDto);
-    this.server.emit('messageToClient');
 
+    const message = await this.databaseService.message.create({
+      data:{
+        content: createMessageDto.content,
+        senderId: createMessageDto.senderId,
+        chatId: createMessageDto.chatId,
+        attach: createMessageDto.attach,
+        attachSize: createMessageDto.attachSize,
+        attach2: createMessageDto.attach2,
+        attachSize2: createMessageDto.attachSize2
+      },
+    })
+    console.log(message);
+    
+    
+    this.server.emit('messageToClient',message);
+    
   }
 
 /////////////// edit
   @SubscribeMessage('getMessagesServer')
   async getMessages(@ConnectedSocket() client: Socket ,@MessageBody() chatId?: number) {
-
+    const messages = await this.databaseService.message.findMany({
+      where: {
+        chatId
+      },
+    })
+    return messages
   }
 
 }

@@ -1,6 +1,7 @@
 export class CreateMessageDto {
     content: string;
     senderId: number;
+    recieverId: number;
     chatId: number;
     attach?: string
     attachSize?: string

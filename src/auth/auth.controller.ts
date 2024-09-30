@@ -19,12 +19,12 @@ export class AuthController {
         }),
       }))
     signUp(@Body() signupDto: SignUpDto, @UploadedFile() file) {
-        signupDto.image = 'http://localhost:3000/files/' + file?.originalname; // Update this to use the new filename
+        signupDto.image = 'http://85.31.237.33/files/' + file?.originalname; // Update this to use the new filename
         return this.authService.signUp(signupDto)
     }
     
     @Post('login')
     logIn(@Body() loginDto: LoginDto) {
-        return this.authService.logIn(loginDto)
+      return this.authService.logIn(loginDto)
     }
 }

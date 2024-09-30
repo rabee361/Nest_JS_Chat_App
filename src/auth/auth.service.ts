@@ -35,15 +35,16 @@ export class AuthService {
 
     async logIn(loginDto: LoginDto) {
         let { email , password } = loginDto;
+        
         try {
             const user = await this.database.user.findUnique({
                 where: {
                     email,
                 }
             })
-                
-            const isMatch = await bcrypt.compare(password ,user.password)
             
+            const isMatch = await bcrypt.compare(password ,user.password)
+
             if (!isMatch) {
                 throw new HttpException('wrong password' , HttpStatus.BAD_REQUEST)
             }
